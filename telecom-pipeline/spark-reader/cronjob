@@ -1,0 +1,1 @@
+*/10 * * * * /opt/bitnami/spark/bin/spark-submit --jars /opt/bitnami/spark/jars/postgresql-42.5.4.jar /app/billing.py >> /var/log/cron.log 2>&1

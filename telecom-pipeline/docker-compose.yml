@@ -1,0 +1,172 @@
+services:
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.4.0
+    networks:
+      telecom-net:
+        aliases:
+          - zookeeper-host
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+
+  kafka:
+    image: confluentinc/cp-kafka:7.4.0
+    depends_on:
+      - zookeeper
+    networks:
+      - telecom-net
+    environment:
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper-host:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,INTERNAL://localhost:29092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,PLAINTEXT:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+      KAFKA_NUM_PARTITIONS: 3
+    healthcheck:
+      test: ["CMD", "kafka-topics", "--list", "--bootstrap-server", "localhost:9092"]
+      interval: 10s
+      timeout: 20s
+      retries: 15
+    command: >
+     bash -c "
+      echo 'Waiting for Zookeeper...'
+      while ! nc -z zookeeper-host 2181; do sleep 2; done
+
+      /etc/confluent/docker/run &
+
+      echo 'Waiting for Kafka to start...'
+      while ! kafka-topics --bootstrap-server localhost:9092 --list; do sleep 5; done
+
+      kafka-topics --create --if-not-exists --bootstrap-server localhost:9092 --topic cdr-topic --partitions 3 --replication-factor 1
+      kafka-topics --create --if-not-exists --bootstrap-server localhost:9092 --topic clean-cdr-topic --partitions 3 --replication-factor 1
+
+      tail -f /dev/null
+     "
+
+  spark-master:
+    image: bitnami/spark:3.4.1
+    networks:
+      - telecom-net
+    environment:
+      SPARK_MASTER_HOST: spark-master
+      SPARK_JARS_IVY: /ivy_cache
+    volumes:
+      - ivy-cache:/ivy_cache
+    command: >
+      /opt/bitnami/spark/bin/spark-class org.apache.spark.deploy.master.Master
+      -h spark-master
+    ports:
+      - "8080:8080"
+
+  postgres:
+    image: postgres:14.17
+    networks:
+      - telecom-net
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: telecom
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./init:/docker-entrypoint-initdb.d
+
+  data-generator:
+    build: ./data-generator
+    networks:
+      - telecom-net
+    depends_on:
+      kafka:
+        condition: service_healthy
+    environment:
+      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+    entrypoint: ["/bin/sh", "-c", "while ! nc -z kafka 9092; do sleep 5; done; python data_generator.py"]
+
+  mediation-streaming:
+    build: ./mediation-streaming
+    networks:
+      - telecom-net
+    depends_on:
+      - spark-master
+      - kafka
+    environment:
+      SPARK_MASTER: spark://spark-master:7077
+      SPARK_JARS_IVY: /ivy_cache
+    volumes:
+      - ivy-cache:/ivy_cache
+
+  rating-engine:
+    build: ./rating-engine
+    networks:
+      - telecom-net
+    depends_on:
+      - spark-master
+      - postgres
+    environment:
+      SPARK_MASTER: spark://spark-master:7077
+      SPARK_JARS_IVY: /ivy_cache
+    volumes:
+      - ivy-cache:/ivy_cache
+
+  billing-engine:
+    build: ./billing-engine
+    networks:
+      - telecom-net
+    depends_on:
+      - postgres
+    environment:
+      SPARK_MASTER: spark://spark-master:7077
+      SPARK_JARS_IVY: /ivy_cache
+      SPARK_DRIVER_MEMORY: "2g"
+    volumes:
+      - ivy-cache:/ivy_cache
+  spark-reader:
+    build: ./spark-reader
+    networks:
+      - telecom-net
+    depends_on:
+      - postgres
+    environment:
+      SPARK_MASTER: spark://spark-master:7077
+      SPARK_JARS_IVY: /ivy_cache
+      SPARK_DRIVER_MEMORY: "2g"
+      
+      # Variables nécessaires pour accéder à PostgreSQL
+      POSTGRES_URL: jdbc:postgresql://postgres:5432/telecom
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_TABLE: telecom_data.rated_events
+    volumes:
+      - ivy-cache:/ivy_cache
+  superset:
+   build: ./superset
+   container_name: superset
+   ports:
+    - "8088:8088"
+   networks:
+    - telecom-net
+   environment:
+    SUPERSET_SECRET_KEY: "your_random_secret_key"
+    ADMIN_USERNAME: admin
+    ADMIN_EMAIL: admin@telecom.com
+    ADMIN_PASSWORD: admin
+    FLASK_APP: superset
+   volumes:
+    - superset_home:/app/superset_home
+   depends_on:
+    - postgres
+   command: >
+    /bin/bash -c "
+    superset db upgrade &&
+    (superset fab list-users | grep -q admin || superset fab create-admin --username admin --firstname Admin --lastname User --email admin@telecom.com --password admin) &&
+    superset init &&
+    superset run -h 0.0.0.0 -p 8088"
+
+volumes:
+  postgres-data:
+  ivy-cache:
+  kafka-data:
+  superset_home:
+
+networks:
+  telecom-net:
+    driver: bridge

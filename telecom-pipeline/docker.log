@@ -1,0 +1,300 @@
+Compose can now delegate builds to bake for better performance.
+ To do so, set COMPOSE_BAKE=true.
+#0 building with "default" instance using docker driver
+
+#1 [mediation-streaming internal] load build definition from Dockerfile
+#1 transferring dockerfile: 478B done
+#1 DONE 0.0s
+
+#2 [data-generator internal] load build definition from Dockerfile
+#2 transferring dockerfile: 257B 0.0s done
+#2 DONE 0.0s
+
+#3 [rating-engine internal] load build definition from Dockerfile
+#3 transferring dockerfile: 622B done
+#3 DONE 0.0s
+
+#4 [billing-engine internal] load build definition from Dockerfile
+#4 transferring dockerfile: 552B 0.0s done
+#4 DONE 0.0s
+
+#5 [billing-engine internal] load metadata for docker.io/bitnami/spark:3.4.1
+#5 DONE 0.0s
+
+#6 [mediation-streaming internal] load .dockerignore
+#6 transferring context: 2B done
+#6 DONE 0.0s
+
+#7 [rating-engine internal] load .dockerignore
+#7 transferring context: 2B done
+#7 DONE 0.0s
+
+#8 [billing-engine internal] load .dockerignore
+#8 transferring context: 2B done
+#8 DONE 0.0s
+
+#9 [data-generator internal] load metadata for docker.io/library/python:3.9-slim
+#9 ...
+
+#10 [billing-engine 1/4] FROM docker.io/bitnami/spark:3.4.1
+#10 DONE 0.0s
+
+#11 [mediation-streaming internal] load build context
+#11 transferring context: 3.89kB done
+#11 DONE 0.0s
+
+#12 [rating-engine internal] load build context
+#12 transferring context: 97B done
+#12 DONE 0.0s
+
+#13 [billing-engine internal] load build context
+#13 transferring context: 98B done
+#13 DONE 0.0s
+
+#14 [mediation-streaming 2/4] RUN apt-get update &&     apt-get install -y wget &&     wget -q -P /opt/bitnami/spark/jars/     https://repo1.maven.org/maven2/org/apache/spark/spark-sql-kafka-0-10_2.12/3.4.1/spark-sql-kafka-0-10_2.12-3.4.1.jar
+#14 CACHED
+
+#15 [mediation-streaming 3/4] WORKDIR /app
+#15 CACHED
+
+#16 [billing-engine 4/4] COPY billing_engine.py .
+#16 CACHED
+
+#17 [billing-engine 2/4] RUN apt-get update &&     apt-get install -y wget &&     wget -q https://jdbc.postgresql.org/download/postgresql-42.6.0.jar -P /opt/bitnami/spark/jars/ &&     chmod 644 /opt/bitnami/spark/jars/postgresql-42.6.0.jar
+#17 CACHED
+
+#18 [billing-engine 3/4] WORKDIR /app
+#18 CACHED
+
+#19 [rating-engine 4/4] COPY rating_engine.py .
+#19 CACHED
+
+#20 [billing-engine] exporting to image
+#20 exporting layers done
+#20 writing image sha256:cea60e53d4d9b8d0f03b477d771878694280870022b0e7eb69ed77c38c2843ae done
+#20 naming to docker.io/library/telecom-pipeline-billing-engine done
+#20 DONE 0.0s
+
+#21 [rating-engine] exporting to image
+#21 exporting layers done
+#21 writing image sha256:ae128357f80d0bd64723cf52cd346d690d6ca695d6bf8a98345239d06fa6a878 done
+#21 naming to docker.io/library/telecom-pipeline-rating-engine done
+#21 DONE 0.0s
+
+#22 [mediation-streaming 4/4] COPY mediation_streaming.py .
+#22 DONE 0.0s
+
+#23 [billing-engine] resolving provenance for metadata file
+#23 DONE 0.0s
+
+#24 [rating-engine] resolving provenance for metadata file
+#24 DONE 0.0s
+
+#25 [mediation-streaming] exporting to image
+#25 exporting layers 0.0s done
+#25 writing image sha256:423c81fb560de77624d4dda074cf8946b4d5097b939e4cc7ff3c563dcb158859 done
+#25 naming to docker.io/library/telecom-pipeline-mediation-streaming done
+#25 DONE 0.1s
+
+#26 [mediation-streaming] resolving provenance for metadata file
+#26 DONE 0.0s
+
+#9 [data-generator internal] load metadata for docker.io/library/python:3.9-slim
+#9 DONE 0.9s
+
+#27 [data-generator internal] load .dockerignore
+#27 transferring context: 2B done
+#27 DONE 0.0s
+
+#28 [data-generator 1/5] FROM docker.io/library/python:3.9-slim@sha256:bef8d69306a7905f55cd523f5604de1dde45bbf745ba896dbb89f6d15c727170
+#28 DONE 0.0s
+
+#29 [data-generator internal] load build context
+#29 transferring context: 192B done
+#29 DONE 0.0s
+
+#30 [data-generator 2/5] WORKDIR /app
+#30 CACHED
+
+#31 [data-generator 4/5] RUN pip install -r requirements.txt
+#31 CACHED
+
+#32 [data-generator 3/5] COPY requirements.txt .
+#32 CACHED
+
+#33 [data-generator 5/5] COPY data_generator.py .
+#33 CACHED
+
+#34 [data-generator] exporting to image
+#34 exporting layers done
+#34 writing image sha256:8a651f7b5feb78152a2e8b828807de25710e2b1bd3fdfe20e49eec161ae528dd done
+#34 naming to docker.io/library/telecom-pipeline-data-generator done
+#34 DONE 0.0s
+
+#35 [data-generator] resolving provenance for metadata file
+#35 DONE 0.0s
+Attaching to billing-engine-1, data-generator-1, kafka-1, kafka-setup-1, mediation-streaming-1, postgres-1, rating-engine-1, spark-master-1, spark-worker-1, zookeeper-1
+spark-master-1         | 
+zookeeper-1            | ===> User
+zookeeper-1            | uid=1000(appuser) gid=1000(appuser) groups=1000(appuser)
+zookeeper-1            | ===> Configuring ...
+postgres-1             | The files belonging to this database system will be owned by user "postgres".
+postgres-1             | This user must also own the server process.
+postgres-1             | 
+postgres-1             | The database cluster will be initialized with locale "en_US.utf8".
+postgres-1             | The default database encoding has accordingly been set to "UTF8".
+postgres-1             | The default text search configuration will be set to "english".
+postgres-1             | 
+postgres-1             | Data page checksums are disabled.
+postgres-1             | 
+postgres-1             | fixing permissions on existing directory /var/lib/postgresql/data ... ok
+postgres-1             | creating subdirectories ... ok
+postgres-1             | selecting dynamic shared memory implementation ... posix
+postgres-1             | selecting default max_connections ... 100
+postgres-1             | selecting default shared_buffers ... 128MB
+postgres-1             | selecting default time zone ... Etc/UTC
+postgres-1             | creating configuration files ... ok
+postgres-1             | running bootstrap script ... ok
+spark-worker-1         | 
+billing-engine-1       | 
+postgres-1             | performing post-bootstrap initialization ... ok
+postgres-1             | syncing data to disk ... ok
+postgres-1             | 
+postgres-1             | 
+postgres-1             | Success. You can now start the database server using:
+postgres-1             | 
+postgres-1             |     pg_ctl -D /var/lib/postgresql/data -l logfile start
+postgres-1             | 
+postgres-1             | waiting for server to start....2025-05-08 14:26:36.266 UTC [48] LOG:  starting PostgreSQL 14.17 (Debian 14.17-1.pgdg120+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 12.2.0-14) 12.2.0, 64-bit
+postgres-1             | 2025-05-08 14:26:36.270 UTC [48] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
+postgres-1             | 2025-05-08 14:26:36.281 UTC [49] LOG:  database system was shut down at 2025-05-08 14:26:35 UTC
+postgres-1             | 2025-05-08 14:26:36.298 UTC [48] LOG:  database system is ready to accept connections
+postgres-1             |  done
+postgres-1             | server started
+postgres-1             | CREATE DATABASE
+postgres-1             | 
+postgres-1             | 
+postgres-1             | /usr/local/bin/docker-entrypoint.sh: running /docker-entrypoint-initdb.d/init.sql
+postgres-1             | CREATE TABLE
+postgres-1             | CREATE TABLE
+postgres-1             | 
+postgres-1             | 
+postgres-1             | 2025-05-08 14:26:37.272 UTC [48] LOG:  received fast shutdown request
+postgres-1             | waiting for server to shut down....2025-05-08 14:26:37.273 UTC [48] LOG:  aborting any active transactions
+postgres-1             | 2025-05-08 14:26:37.290 UTC [48] LOG:  background worker "logical replication launcher" (PID 55) exited with exit code 1
+postgres-1             | 2025-05-08 14:26:37.292 UTC [50] LOG:  shutting down
+postgres-1             | 2025-05-08 14:26:37.359 UTC [48] LOG:  database system is shut down
+postgres-1             |  done
+postgres-1             | server stopped
+postgres-1             | 
+postgres-1             | PostgreSQL init process complete; ready for start up.
+postgres-1             | 
+zookeeper-1            | ===> Running preflight checks ... 
+zookeeper-1            | ===> Check if /var/lib/zookeeper/data is writable ...
+zookeeper-1            | ===> Check if /var/lib/zookeeper/log is writable ...
+zookeeper-1            | ===> Launching ... 
+zookeeper-1            | ===> Printing /var/lib/zookeeper/data/myid 
+zookeeper-1            | 1===> Launching zookeeper ... 
+zookeeper-1            | [2025-05-08 14:26:49,760] INFO Reading configuration from: /etc/kafka/zookeeper.properties (org.apache.zookeeper.server.quorum.QuorumPeerConfig)
+zookeeper-1            | [2025-05-08 14:26:49,790] INFO clientPortAddress is 0.0.0.0:2181 (org.apache.zookeeper.server.quorum.QuorumPeerConfig)
+zookeeper-1            | [2025-05-08 14:26:49,791] INFO secureClientPort is not set (org.apache.zookeeper.server.quorum.QuorumPeerConfig)
+zookeeper-1            | [2025-05-08 14:26:49,792] INFO observerMasterPort is not set (org.apache.zookeeper.server.quorum.QuorumPeerConfig)
+zookeeper-1            | [2025-05-08 14:26:49,793] INFO metricsProvider.className is org.apache.zookeeper.metrics.impl.DefaultMetricsProvider (org.apache.zookeeper.server.quorum.QuorumPeerConfig)
+zookeeper-1            | [2025-05-08 14:26:49,809] INFO autopurge.snapRetainCount set to 3 (org.apache.zookeeper.server.DatadirCleanupManager)
+zookeeper-1            | [2025-05-08 14:26:49,810] INFO autopurge.purgeInterval set to 0 (org.apache.zookeeper.server.DatadirCleanupManager)
+zookeeper-1            | [2025-05-08 14:26:49,811] INFO Purge task is not scheduled. (org.apache.zookeeper.server.DatadirCleanupManager)
+zookeeper-1            | [2025-05-08 14:26:49,812] WARN Either no config or no quorum defined in config, running in standalone mode (org.apache.zookeeper.server.quorum.QuorumPeerMain)
+zookeeper-1            | [2025-05-08 14:26:49,817] INFO Log4j 1.2 jmx support not found; jmx disabled. (org.apache.zookeeper.jmx.ManagedUtil)
+zookeeper-1            | [2025-05-08 14:26:49,820] INFO Reading configuration from: /etc/kafka/zookeeper.properties (org.apache.zookeeper.server.quorum.QuorumPeerConfig)
+zookeeper-1            | [2025-05-08 14:26:49,823] INFO clientPortAddress is 0.0.0.0:2181 (org.apache.zookeeper.server.quorum.QuorumPeerConfig)
+zookeeper-1            | [2025-05-08 14:26:49,823] INFO secureClientPort is not set (org.apache.zookeeper.server.quorum.QuorumPeerConfig)
+zookeeper-1            | [2025-05-08 14:26:49,823] INFO observerMasterPort is not set (org.apache.zookeeper.server.quorum.QuorumPeerConfig)
+zookeeper-1            | [2025-05-08 14:26:49,823] INFO metricsProvider.className is org.apache.zookeeper.metrics.impl.DefaultMetricsProvider (org.apache.zookeeper.server.quorum.QuorumPeerConfig)
+zookeeper-1            | [2025-05-08 14:26:49,825] INFO Starting server (org.apache.zookeeper.server.ZooKeeperServerMain)
+zookeeper-1            | [2025-05-08 14:26:49,877] INFO ServerMetrics initialized with provider org.apache.zookeeper.metrics.impl.DefaultMetricsProvider@44a7bfbc (org.apache.zookeeper.server.ServerMetrics)
+zookeeper-1            | [2025-05-08 14:26:49,893] INFO zookeeper.snapshot.trust.empty : false (org.apache.zookeeper.server.persistence.FileTxnSnapLog)
+zookeeper-1            | [2025-05-08 14:26:49,939] INFO  (org.apache.zookeeper.server.ZooKeeperServer)
+zookeeper-1            | [2025-05-08 14:26:49,939] INFO   ______                  _                                           (org.apache.zookeeper.server.ZooKeeperServer)
+zookeeper-1            | [2025-05-08 14:26:49,939] INFO  |___  /                 | |                                          (org.apache.zookeeper.server.ZooKeeperServer)
+zookeeper-1            | [2025-05-08 14:26:49,940] INFO     / /    ___     ___   | | __   ___    ___   _ __     ___   _ __    (org.apache.zookeeper.server.ZooKeeperServer)
+zookeeper-1            | [2025-05-08 14:26:49,940] INFO    / /    / _ \   / _ \  | |/ /  / _ \  / _ \ | '_ \   / _ \ | '__| (org.apache.zookeeper.server.ZooKeeperServer)
+zookeeper-1            | [2025-05-08 14:26:49,940] INFO   / /__  | (_) | | (_) | |   <  |  __/ |  __/ | |_) | |  __/ | |     (org.apache.zookeeper.server.ZooKeeperServer)
+zookeeper-1            | [2025-05-08 14:26:49,940] INFO  /_____|  \___/   \___/  |_|\_\  \___|  \___| | .__/   \___| |_| (org.apache.zookeeper.server.ZooKeeperServer)
+zookeeper-1            | [2025-05-08 14:26:49,940] INFO                                               | |                      (org.apache.zookeeper.server.ZooKeeperServer)
+zookeeper-1            | [2025-05-08 14:26:49,940] INFO                                               |_|                      (org.apache.zookeeper.server.ZooKeeperServer)
+zookeeper-1            | [2025-05-08 14:26:49,941] INFO  (org.apache.zookeeper.server.ZooKeeperServer)
+zookeeper-1            | [2025-05-08 14:26:49,948] INFO Server environment:zookeeper.version=3.6.3--6401e4ad2087061bc6b9f80dec2d69f2e3c8660a, built on 04/08/2021 16:35 GMT (org.apache.zookeeper.server.ZooKeeperServer)
+zookeeper-1            | [2025-05-08 14:26:49,948] INFO Server environment:host.name=7ffc76fd4207 (org.apache.zookeeper.server.ZooKeeperServer)
+zookeeper-1            | [2025-05-08 14:26:49,948] INFO Server environment:java.version=11.0.16.1 (org.apache.zookeeper.server.ZooKeeperServer)
+zookeeper-1            | [2025-05-08 14:26:49,948] INFO Server environment:java.vendor=Azul Systems, Inc. (org.apache.zookeeper.server.ZooKeeperServer)
+zookeeper-1            | [2025-05-08 14:26:49,948] INFO Server environment:java.home=/usr/lib/jvm/zulu11-ca (org.apache.zookeeper.server.ZooKeeperServer)
+zookeeper-1            | [2025-05-08 14:26:49,948] INFO Server environment:java.class.path=/usr/bin/../share/java/kafka/activation-1.1.1.jar:/usr/bin/../share/java/kafka/aopalliance-repackaged-2.6.1.jar:/usr/bin/../share/java/kafka/argparse4j-0.7.0.jar:/usr/bin/../share/java/kafka/audience-annotations-0.5.0.jar:/usr/bin/../share/java/kafka/commons-cli-1.4.jar:/usr/bin/../share/java/kafka/commons-lang3-3.12.0.jar:/usr/bin/../share/java/kafka/commons-lang3-3.8.1.jar:/usr/bin/../share/java/kafka/connect-api-7.3.0-ccs.jar:/usr/bin/../share/java/kafka/connect-basic-auth-extension-7.3.0-ccs.jar:/usr/bin/../share/java/kafka/connect-json-7.3.0-ccs.jar:/usr/bin/../share/java/kafka/connect-mirror-7.3.0-ccs.jar:/usr/bin/../share/java/kafka/connect-mirror-client-7.3.0-ccs.jar:/usr/bin/../share/java/kafka/connect-runtime-7.3.0-ccs.jar:/usr/bin/../share/java/kafka/connect-transforms-7.3.0-ccs.jar:/usr/bin/../share/java/kafka/hk2-api-2.6.1.jar:/usr/bin/../share/java/kafka/hk2-locator-2.6.1.jar:/usr/bin/../share/java/kafka/hk2-utils-2.6.1.jar:/usr/bin/../share/java/kafka/jackson-annotations-2.13.3.jar:/usr/bin/../share/java/kafka/jackson-core-2.13.3.jar:/usr/bin/../share/java/kafka/jackson-databind-2.13.3.jar:/usr/bin/../share/java/kafka/jackson-dataformat-csv-2.13.3.jar:/usr/bin/../share/java/kafka/jackson-datatype-jdk8-2.13.3.jar:/usr/bin/../share/java/kafka/jackson-jaxrs-base-2.13.3.jar:/usr/bin/../share/java/kafka/jackson-jaxrs-json-provider-2.13.3.jar:/usr/bin/../share/java/kafka/jackson-module-jaxb-annotations-2.13.3.jar:/usr/bin/../share/java/kafka/jackson-module-scala_2.13-2.13.3.jar:/usr/bin/../share/java/kafka/jakarta.activation-api-1.2.2.jar:/usr/bin/../share/java/kafka/jakarta.annotation-api-1.3.5.jar:/usr/bin/../share/java/kafka/jakarta.inject-2.6.1.jar:/usr/bin/../share/java/kafka/jakarta.validation-api-2.0.2.jar:/usr/bin/../share/java/kafka/jakarta.ws.rs-api-2.1.6.jar:/usr/bin/../share/java/kafka/jakarta.xml.bind-api-2.3.3.jar:/usr/bin/../share/java/kafka/javassist-3.27.0-GA.jar:/usr/bin/../share/java/kafka/javax.servlet-api-3.1.0.jar:/usr/bin/../share/java/kafka/javax.ws.rs-api-2.1.1.jar:/usr/bin/../share/java/kafka/jaxb-api-2.3.0.jar:/usr/bin/../share/java/kafka/jersey-client-2.34.jar:/usr/bin/../share/java/kafka/jersey-common-2.34.jar:/usr/bin/../share/java/kafka/jersey-container-servlet-2.34.jar:/usr/bin/../share/java/kafka/jersey-container-servlet-core-2.34.jar:/usr/bin/../share/java/kafka/jersey-hk2-2.34.jar:/usr/bin/../share/java/kafka/jersey-server-2.34.jar:/usr/bin/../share/java/kafka/jetty-client-9.4.48.v20220622.jar:/usr/bin/../share/java/kafka/jetty-continuation-9.4.48.v20220622.jar:/usr/bin/../share/java/kafka/jetty-http-9.4.48.v20220622.jar:/usr/bin/../share/java/kafka/jetty-io-9.4.48.v20220622.jar:/usr/bin/../share/java/kafka/jetty-security-9.4.48.v20220622.jar:/usr/bin/../share/java/kafka/jetty-server-9.4.48.v20220622.jar:/usr/bin/../share/java/kafka/jetty-servlet-9.4.48.v20220622.jar:/usr/bin/../share/java/kafka/jetty-servlets-9.4.48.v20220622.jar:/usr/bin/../share/java/kafka/jetty-util-9.4.48.v20220622.jar:/usr/bin/../share/java/kafka/jetty-util-ajax-9.4.48.v20220622.jar:/usr/bin/../share/java/kafka/jline-3.21.0.jar:/usr/bin/../share/java/kafka/jopt-simple-5.0.4.jar:/usr/bin/../share/java/kafka/jose4j-0.7.9.jar:/usr/bin/../share/java/kafka/kafka-clients-7.3.0-ccs.jar:/usr/bin/../share/java/kafka/kafka-log4j-appender-7.3.0-ccs.jar:/usr/bin/../share/java/kafka/kafka-metadata-7.3.0-ccs.jar:/usr/bin/../share/java/kafka/kafka-raft-7.3.0-ccs.jar:/usr/bin/../share/java/kafka/kafka-server-common-7.3.0-ccs.jar:/usr/bin/../share/java/kafka/kafka-shell-7.3.0-ccs.jar:/usr/bin/../share/java/kafka/kafka-storage-7.3.0-ccs.jar:/usr/bin/../share/java/kafka/kafka-storage-api-7.3.0-ccs.jar:/usr/bin/../share/java/kafka/kafka-streams-7.3.0-ccs.jar:/usr/bin/../share/java/kafka/kafka-streams-examples-7.3.0-ccs.jar:/usr/bin/../share/java/kafka/kafka-streams-scala_2.13-7.3.0-ccs.jar:/usr/bin/../share/java/kafka/kafka-streams-test-utils-7.3.0-ccs.jar:/usr/bin/../share/java/kafka/kafka-tools-7.3.0-ccs.jar:/usr/bin/../share/java/kafka/kafka.jar:/usr/bin/../share/java/kafka/kafka_2.13-7.3.0-ccs.jar:/usr/bin/../share/java/kafka/lz4-java-1.8.0.jar:/usr/bin/../share/java/kafka/maven-artifact-3.8.4.jar:/usr/bin/../share/java/kafka/metrics-core-2.2.0.jar:/usr/bin/../share/java/kafka/metrics-core-4.1.12.1.jar:/usr/bin/../share/java/kafka/netty-buffer-4.1.79.Final.jar:/usr/bin/../share/java/kafka/netty-codec-4.1.79.Final.jar:/usr/bin/../share/java/kafka/netty-common-4.1.79.Final.jar:/usr/bin/../share/java/kafka/netty-handler-4.1.79.Final.jar:/usr/bin/../share/java/kafka/netty-resolver-4.1.79.Final.jar:/usr/bin/../share/java/kafka/netty-transport-4.1.79.Final.jar:/usr/bin/../share/java/kafka/netty-transport-classes-epoll-4.1.79.Final.jar:/usr/bin/../share/java/kafka/netty-transport-native-epoll-4.1.79.Final.jar:/usr/bin/../share/java/kafka/netty-transport-native-unix-common-4.1.79.Final.jar:/usr/bin/../share/java/kafka/osgi-resource-locator-1.0.3.jar:/usr/bin/../share/java/kafka/paranamer-2.8.jar:/usr/bin/../share/java/kafka/plexus-utils-3.3.0.jar:/usr/bin/../share/java/kafka/reflections-0.9.12.jar:/usr/bin/../share/java/kafka/reload4j-1.2.19.jar:/usr/bin/../share/java/kafka/rocksdbjni-6.29.4.1.jar:/usr/bin/../share/java/kafka/scala-collection-compat_2.13-2.6.0.jar:/usr/bin/../share/java/kafka/scala-library-2.13.8.jar:/usr/bin/../share/java/kafka/scala-java8-compat_2.13-1.0.2.jar:/usr/bin/../share/java/kafka/scala-logging_2.13-3.9.4.jar:/usr/bin/../share/java/kafka/scala-reflect-2.13.8.jar:/usr/bin/../share/java/kafka/slf4j-api-1.7.36.jar:/usr/bin/../share/java/kafka/slf4j-reload4j-1.7.36.jar:/usr/bin/../share/java/kafka/snappy-java-1.1.8.4.jar:/usr/bin/../share/java/kafka/swagger-annotations-2.2.0.jar:/usr/bin/../share/java/kafka/trogdor-7.3.0-ccs.jar:/usr/bin/../share/java/kafka/zookeeper-3.6.3.jar:/usr/bin/../share/java/kafka/zookeeper-jute-3.6.3.jar:/usr/bin/../share/java/kafka/zstd-jni-1.5.2-1.jar:/usr/bin/../share/java/confluent-telemetry/* (org.apache.zookeeper.server.ZooKeeperServer)
+zookeeper-1            | [2025-05-08 14:26:49,949] INFO Server environment:java.library.path=/usr/java/packages/lib:/usr/lib64:/lib64:/lib:/usr/lib (org.apache.zookeeper.server.ZooKeeperServer)
+zookeeper-1            | [2025-05-08 14:26:49,949] INFO Server environment:java.io.tmpdir=/tmp (org.apache.zookeeper.server.ZooKeeperServer)
+zookeeper-1            | [2025-05-08 14:26:49,949] INFO Server environment:java.compiler=<NA> (org.apache.zookeeper.server.ZooKeeperServer)
+zookeeper-1            | [2025-05-08 14:26:49,949] INFO Server environment:os.name=Linux (org.apache.zookeeper.server.ZooKeeperServer)
+zookeeper-1            | [2025-05-08 14:26:49,950] INFO Server environment:os.arch=amd64 (org.apache.zookeeper.server.ZooKeeperServer)
+zookeeper-1            | [2025-05-08 14:26:49,950] INFO Server environment:os.version=5.14.0-580.el9.x86_64 (org.apache.zookeeper.server.ZooKeeperServer)
+zookeeper-1            | [2025-05-08 14:26:49,950] INFO Server environment:user.name=appuser (org.apache.zookeeper.server.ZooKeeperServer)
+zookeeper-1            | [2025-05-08 14:26:49,950] INFO Server environment:user.home=/home/appuser (org.apache.zookeeper.server.ZooKeeperServer)
+zookeeper-1            | [2025-05-08 14:26:49,950] INFO Server environment:user.dir=/home/appuser (org.apache.zookeeper.server.ZooKeeperServer)
+zookeeper-1            | [2025-05-08 14:26:49,950] INFO Server environment:os.memory.free=491MB (org.apache.zookeeper.server.ZooKeeperServer)
+zookeeper-1            | [2025-05-08 14:26:49,951] INFO Server environment:os.memory.max=512MB (org.apache.zookeeper.server.ZooKeeperServer)
+zookeeper-1            | [2025-05-08 14:26:49,951] INFO Server environment:os.memory.total=512MB (org.apache.zookeeper.server.ZooKeeperServer)
+zookeeper-1            | [2025-05-08 14:26:49,951] INFO zookeeper.enableEagerACLCheck = false (org.apache.zookeeper.server.ZooKeeperServer)
+zookeeper-1            | [2025-05-08 14:26:49,952] INFO zookeeper.digest.enabled = true (org.apache.zookeeper.server.ZooKeeperServer)
+zookeeper-1            | [2025-05-08 14:26:49,952] INFO zookeeper.closeSessionTxn.enabled = true (org.apache.zookeeper.server.ZooKeeperServer)
+zookeeper-1            | [2025-05-08 14:26:49,953] INFO zookeeper.flushDelay=0 (org.apache.zookeeper.server.ZooKeeperServer)
+zookeeper-1            | [2025-05-08 14:26:49,954] INFO zookeeper.maxWriteQueuePollTime=0 (org.apache.zookeeper.server.ZooKeeperServer)
+zookeeper-1            | [2025-05-08 14:26:49,954] INFO zookeeper.maxBatchSize=1000 (org.apache.zookeeper.server.ZooKeeperServer)
+zookeeper-1            | [2025-05-08 14:26:49,954] INFO zookeeper.intBufferStartingSizeBytes = 1024 (org.apache.zookeeper.server.ZooKeeperServer)
+zookeeper-1            | [2025-05-08 14:26:49,960] INFO Weighed connection throttling is disabled (org.apache.zookeeper.server.BlueThrottle)
+zookeeper-1            | [2025-05-08 14:26:49,965] INFO minSessionTimeout set to 4000 (org.apache.zookeeper.server.ZooKeeperServer)
+zookeeper-1            | [2025-05-08 14:26:49,966] INFO maxSessionTimeout set to 40000 (org.apache.zookeeper.server.ZooKeeperServer)
+zookeeper-1            | [2025-05-08 14:26:49,971] INFO Response cache size is initialized with value 400. (org.apache.zookeeper.server.ResponseCache)
+zookeeper-1            | [2025-05-08 14:26:49,971] INFO Response cache size is initialized with value 400. (org.apache.zookeeper.server.ResponseCache)
+zookeeper-1            | [2025-05-08 14:26:49,976] INFO zookeeper.pathStats.slotCapacity = 60 (org.apache.zookeeper.server.util.RequestPathMetricsCollector)
+zookeeper-1            | [2025-05-08 14:26:49,976] INFO zookeeper.pathStats.slotDuration = 15 (org.apache.zookeeper.server.util.RequestPathMetricsCollector)
+zookeeper-1            | [2025-05-08 14:26:49,976] INFO zookeeper.pathStats.maxDepth = 6 (org.apache.zookeeper.server.util.RequestPathMetricsCollector)
+zookeeper-1            | [2025-05-08 14:26:49,976] INFO zookeeper.pathStats.initialDelay = 5 (org.apache.zookeeper.server.util.RequestPathMetricsCollector)
+zookeeper-1            | [2025-05-08 14:26:49,977] INFO zookeeper.pathStats.delay = 5 (org.apache.zookeeper.server.util.RequestPathMetricsCollector)
+zookeeper-1            | [2025-05-08 14:26:49,977] INFO zookeeper.pathStats.enabled = false (org.apache.zookeeper.server.util.RequestPathMetricsCollector)
+zookeeper-1            | [2025-05-08 14:26:49,989] INFO The max bytes for all large requests are set to 104857600 (org.apache.zookeeper.server.ZooKeeperServer)
+zookeeper-1            | [2025-05-08 14:26:49,990] INFO The large request threshold is set to -1 (org.apache.zookeeper.server.ZooKeeperServer)
+zookeeper-1            | [2025-05-08 14:26:49,990] INFO Created server with tickTime 2000 minSessionTimeout 4000 maxSessionTimeout 40000 clientPortListenBacklog -1 datadir /var/lib/zookeeper/log/version-2 snapdir /var/lib/zookeeper/data/version-2 (org.apache.zookeeper.server.ZooKeeperServer)
+zookeeper-1            | [2025-05-08 14:26:50,074] INFO Logging initialized @2468ms to org.eclipse.jetty.util.log.Slf4jLog (org.eclipse.jetty.util.log)
+zookeeper-1            | [2025-05-08 14:26:50,391] WARN o.e.j.s.ServletContextHandler@7bbc8656{/,null,STOPPED} contextPath ends with /* (org.eclipse.jetty.server.handler.ContextHandler)
+zookeeper-1            | [2025-05-08 14:26:50,391] WARN Empty contextPath (org.eclipse.jetty.server.handler.ContextHandler)
+zookeeper-1            | [2025-05-08 14:26:50,463] INFO jetty-9.4.48.v20220622; built: 2022-06-21T20:42:25.880Z; git: 6b67c5719d1f4371b33655ff2d047d24e171e49a; jvm 11.0.16.1+1-LTS (org.eclipse.jetty.server.Server)
+zookeeper-1            | [2025-05-08 14:26:50,569] INFO DefaultSessionIdManager workerName=node0 (org.eclipse.jetty.server.session)
+zookeeper-1            | [2025-05-08 14:26:50,569] INFO No SessionScavenger set, using defaults (org.eclipse.jetty.server.session)
+zookeeper-1            | [2025-05-08 14:26:50,575] INFO node0 Scavenging every 660000ms (org.eclipse.jetty.server.session)
+zookeeper-1            | [2025-05-08 14:26:50,588] WARN ServletContext@o.e.j.s.ServletContextHandler@7bbc8656{/,null,STARTING} has uncovered http methods for path: /* (org.eclipse.jetty.security.SecurityHandler)
+zookeeper-1            | [2025-05-08 14:26:50,624] INFO Started o.e.j.s.ServletContextHandler@7bbc8656{/,null,AVAILABLE} (org.eclipse.jetty.server.handler.ContextHandler)
+zookeeper-1            | [2025-05-08 14:26:50,682] INFO Started ServerConnector@3e08ff24{HTTP/1.1, (http/1.1)}{0.0.0.0:8080} (org.eclipse.jetty.server.AbstractConnector)
+zookeeper-1            | [2025-05-08 14:26:50,683] INFO Started @3077ms (org.eclipse.jetty.server.Server)
+zookeeper-1            | [2025-05-08 14:26:50,683] INFO Started AdminServer on address 0.0.0.0, port 8080 and command URL /commands (org.apache.zookeeper.server.admin.JettyAdminServer)
+zookeeper-1            | [2025-05-08 14:26:50,703] INFO Using org.apache.zookeeper.server.NIOServerCnxnFactory as server connection factory (org.apache.zookeeper.server.ServerCnxnFactory)
+zookeeper-1            | [2025-05-08 14:26:50,708] WARN maxCnxns is not configured, using default value 0. (org.apache.zookeeper.server.ServerCnxnFactory)
+zookeeper-1            | [2025-05-08 14:26:50,713] INFO Configuring NIO connection handler with 10s sessionless connection timeout, 1 selector thread(s), 12 worker threads, and 64 kB direct buffers. (org.apache.zookeeper.server.NIOServerCnxnFactory)
+zookeeper-1            | [2025-05-08 14:26:50,718] INFO binding to port 0.0.0.0/0.0.0.0:2181 (org.apache.zookeeper.server.NIOServerCnxnFactory)
+zookeeper-1            | [2025-05-08 14:26:50,773] INFO Using org.apache.zookeeper.server.watch.WatchManager as watch manager (org.apache.zookeeper.server.watch.WatchManagerFactory)
+zookeeper-1            | [2025-05-08 14:26:50,774] INFO Using org.apache.zookeeper.server.watch.WatchManager as watch manager (org.apache.zookeeper.server.watch.WatchManagerFactory)
+zookeeper-1            | [2025-05-08 14:26:50,779] INFO zookeeper.snapshotSizeFactor = 0.33 (org.apache.zookeeper.server.ZKDatabase)
+zookeeper-1            | [2025-05-08 14:26:50,779] INFO zookeeper.commitLogCount=500 (org.apache.zookeeper.server.ZKDatabase)
+zookeeper-1            | [2025-05-08 14:26:50,801] INFO zookeeper.snapshot.compression.method = CHECKED (org.apache.zookeeper.server.persistence.SnapStream)
+zookeeper-1            | [2025-05-08 14:26:50,802] INFO Snapshotting: 0x0 to /var/lib/zookeeper/data/version-2/snapshot.0 (org.apache.zookeeper.server.persistence.FileTxnSnapLog)
+zookeeper-1            | [2025-05-08 14:26:50,816] INFO Snapshot loaded in 36 ms, highest zxid is 0x0, digest is 1371985504 (org.apache.zookeeper.server.ZKDatabase)
+zookeeper-1            | [2025-05-08 14:26:50,817] INFO Snapshotting: 0x0 to /var/lib/zookeeper/data/version-2/snapshot.0 (org.apache.zookeeper.server.persistence.FileTxnSnapLog)
+zookeeper-1            | [2025-05-08 14:26:50,819] INFO Snapshot taken in 3 ms (org.apache.zookeeper.server.ZooKeeperServer)
+zookeeper-1            | [2025-05-08 14:26:50,854] INFO PrepRequestProcessor (sid:0) started, reconfigEnabled=false (org.apache.zookeeper.server.PrepRequestProcessor)
+zookeeper-1            | [2025-05-08 14:26:50,857] INFO zookeeper.request_throttler.shutdownTimeout = 10000 (org.apache.zookeeper.server.RequestThrottler)
+zookeeper-1            | [2025-05-08 14:26:50,914] INFO Using checkIntervalMs=60000 maxPerMinute=10000 maxNeverUsedIntervalMs=0 (org.apache.zookeeper.server.ContainerManager)
+zookeeper-1            | [2025-05-08 14:26:50,917] INFO ZooKeeper audit is disabled. (org.apache.zookeeper.audit.ZKAuditProvider)
+billing-engine-1       | 2025-05-08 14:26:53,601 - BillingEngine - INFO - Démarrage du moteur de facturation...
+billing-engine-1       | 2025-05-08 14:26:53,601 - BillingEngine - INFO - Connexion à PostgreSQL (essai 1)
+zookeeper-1            | [2025-05-08 14:26:53,881] INFO The list of known four letter word commands is : [{1936881266=srvr, 1937006964=stat, 2003003491=wchc, 1685417328=dump, 1668445044=crst, 1936880500=srst, 1701738089=envi, 1668247142=conf, -720899=telnet close, 1751217000=hash, 2003003507=wchs, 2003003504=wchp, 1684632179=dirs, 1668247155=cons, 1835955314=mntr, 1769173615=isro, 1920298859=ruok, 1735683435=gtmk, 1937010027=stmk}] (org.apache.zookeeper.server.command.FourLetterCommands)
+zookeeper-1            | [2025-05-08 14:26:53,881] INFO The list of enabled four letter word commands is : [[srvr]] (org.apache.zookeeper.server.command.FourLetterCommands)
+billing-engine-1       | 2025-05-08 14:27:09,501 - BillingEngine - INFO - Factures générées avec succès
+billing-engine-1       | 2025-05-08 14:27:10,197 - py4j.clientserver - INFO - Closing down clientserver connection
+[Kbilling-engine-1 exited with code 0
